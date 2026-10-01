@@ -10,6 +10,7 @@ const app: Application = express();
 const PORT = Number(process.env.PORT) || 5000;
 
 app.use(express.json()) //parses incoming requests (POST/PUT) with JSON payloads and populates req.body with the parsed JS object
+app.use('/api/auth', authRoutes)
 
 //root route that verifies that the Express server is online and respoinding
 app.get('/', (req: Request, res: Response) => {
