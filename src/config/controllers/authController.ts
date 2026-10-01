@@ -40,8 +40,21 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
 
         const newUser = newUserResult.rows[0];
 
-        
+        //generating JWT token for immediate login after registration
+        const secret = process.env.JWT_SECRET || 'fallback_secret';
+        const token = jwt.sign(
+            {userId: newUser.id, role: newUser.role},
+            secret,
+            {expiresIn: '24h'}
+        );
+
+        res.status(201).json({
+            message: 'User registered successfully',
+            user: newUser,
+            token
+        });
     } catch (error) {
-        
+        console.error('Error registering user:', error);
+        res.status(500).json({error: 'Internal server error while registering user.'});
     }
 }
