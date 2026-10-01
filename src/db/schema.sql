@@ -1,3 +1,4 @@
+--users table with its fields/properties
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
@@ -7,6 +8,7 @@ CREATE TABLE users (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
+--projects table with its fields/properties
 CREATE TABLE projects (
     id SERIAL PRIMARY KEY,
     title VARCHAR(150) NOT NULL,
@@ -15,6 +17,7 @@ CREATE TABLE projects (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
+--submissions table with its fields/properties
 CREATE TABLE submissions (
     id SERIAL PRIMARY KEY,
     project_id INT NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
@@ -25,6 +28,7 @@ CREATE TABLE submissions (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
+--comments table with its fields/properties
 CREATE TABLE comments (
     id SERIAL PRIMARY KEY,
     submission_id INT NOT NULL REFERENCES submissions(id) ON DELETE CASCADE,
