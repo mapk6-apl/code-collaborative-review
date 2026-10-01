@@ -1,6 +1,7 @@
 import express, {Application, Request, Response} from 'express'
 import dotenv from 'dotenv'
 import pool from './config/database'
+import authRoutes from './routes/authRoutes'
 
 dotenv.config();
 
