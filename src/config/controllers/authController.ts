@@ -58,3 +58,53 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
         res.status(500).json({error: 'Internal server error while registering user.'});
     }
 }
+
+export const loginUser = async (req: Request, res: Response): Promise<void> => {
+    const {email, password} = req.body || {};
+
+    //basic validation
+    if(!email || !password){
+        res.status(400).json({error: 'Email and password are required'});
+        return;
+    }
+
+    try {
+        //fetching user by email using parameterized query
+        const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+        if(result.rows.length === 0){
+            res.status(401).json({error: 'Invalid email.'});
+            return;
+        }
+
+        const user = result.rows[0];
+
+        //we compare passwords using bcrypt
+        const isPasswordValid = await bcrypt.compare(password, user.password_hash);
+        if(!isPasswordValid){
+            res.status(401).json({error: 'Invalid password.'})
+            return;
+        }
+
+        //we then generate the JWT token
+        const secret = process.env.JWT_SECRET || 'fallback_secret';
+        const token = jwt.sign(
+            {userId: user.id, role: user.role},
+            secret,
+            {expiresIn: '24h'}
+        );
+
+        res.status(200).json({
+            message: 'Login successful!',
+            token,
+            user: {
+                id: user.id,
+                username: user.username,
+                email: user.email,
+                role: user.role,
+            },
+        });
+    } catch (error) {
+        console.error('Error logging in user:', error);
+        res.status(500).json({error: 'Internal server error while loggin in.'})
+    }
+};
