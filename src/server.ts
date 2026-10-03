@@ -2,6 +2,7 @@ import express, {Application, Request, Response} from 'express'
 import dotenv from 'dotenv'
 import pool from './config/database'
 import authRoutes from './routes/authRoutes'
+import projectRoutes from './routes/projectRoutes'
 
 dotenv.config();
 
@@ -11,6 +12,7 @@ const PORT = Number(process.env.PORT) || 5000;
 
 app.use(express.json()) //parses incoming requests (POST/PUT) with JSON payloads and populates req.body with the parsed JS object
 app.use('/api/auth', authRoutes)
+app.use('/api/projects', projectRoutes)
 
 //root route that verifies that the Express server is online and respoinding
 app.get('/', (req: Request, res: Response) => {
