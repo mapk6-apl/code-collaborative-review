@@ -50,3 +50,35 @@ export const getSubmissionsByProject = async (req: AuthRequest, res: Response): 
         res.status(500).json({ error: 'Internal server error while fetching submissions.' }); 
     }
 };
+
+//update submission status
+export const updateSubmissionsStatus = async (req: AuthRequest, res: Response): Promise<void> => {
+    const {id} = req.params
+    const {status} = req.body
+    const validStatuses = ['pending', 'in\_review', 'approved', 'changes_requested'];
+    if (!status || !validStatuses.includes(status)) {
+        res.status(400).json({ error: `Status must be one of: ${validStatuses.join(', ')}` }); 
+        return; 
+    } 
+    
+    try{
+        const result = await pool.query(
+            `UPDATE submissions 
+            SET status = $1 
+            WHERE id = $2 RETURNING *`, 
+            [status, id] ); 
+            
+            if (result.rows.length === 0) {
+                res.status(404).json({ error: 'Submission not found.' }); 
+                return; 
+            } 
+            
+            res.status(200).json({
+                message: 'Submission status updated successfully!', 
+                submission: result.rows[0], }); 
+            } catch (error) { 
+                console.error('Error updating status:', error)
+                res.status(500).json({ error: 'Internal server error while updating status.' }
+                ); 
+            }
+}
