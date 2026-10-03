@@ -28,3 +28,20 @@ export const createProject = async (req: AuthRequest, res: Response): Promise<vo
         res.status(500).json({error: 'Internal server eror while creating project.'});
     }
 }
+
+//get all projects
+export const getProjects = async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+        const result = await pool.query(
+            `SELECT p.*, u.username as owner_name
+            FROM projects p
+            JOIN users u ON p.owner_id = u.id
+            ORDER BY p.created_at DESC`
+        );
+
+        res.status(200).json(result.rows);
+    } catch (error) {
+        console.error('Error fetching projects:', error)
+        res.status(500).json({error: 'Internal server error while fetching projects.'})
+    }
+}
