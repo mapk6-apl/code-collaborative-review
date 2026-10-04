@@ -3,21 +3,26 @@ import dotenv from 'dotenv'
 import pool from './config/database'
 import authRoutes from './routes/authRoutes'
 import projectRoutes from './routes/projectRoutes'
+import submissionRoutes from './routes/submissionRoutes'
+import commentRoutes from './routes/commentRoutes'
 
 dotenv.config();
 
 const app: Application = express();
 
-const PORT = Number(process.env.PORT) || 5000;
+const PORT = Number(process.env.PORT) || 5001;
 
 app.use(express.json()) //parses incoming requests (POST/PUT) with JSON payloads and populates req.body with the parsed JS object
-app.use('/api/auth', authRoutes)
-app.use('/api/projects', projectRoutes)
 
 //root route that verifies that the Express server is online and respoinding
 app.get('/', (req: Request, res: Response) => {
-    res.status(200).json({message: 'Code Review API is runnning successfully.'})
+    res.status(200).json({message: 'Code Collaborative Review API is runnning successfully.'})
 });
+
+app.use('/api/auth', authRoutes)
+app.use('/api/projects', projectRoutes)
+app.use('/api/submissions', submissionRoutes)
+app.use('/api/comments', commentRoutes)
 
 const startServer = async () => {
     try {
