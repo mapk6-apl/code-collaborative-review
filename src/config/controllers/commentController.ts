@@ -24,3 +24,25 @@ export const addComment = async (req: AuthRequest, res: Response): Promise<void>
         res.status(500).json({ error: 'Internal server error while posting comment.' });
     }
 }
+
+//get all comments for submission
+export const getCommentsBySubmission = async (req: AuthRequest, res: Response): Promise<void> => {
+    const {submissionId} = req.body;
+    const authorId = req.user?.userId;
+
+    try {
+        const result = await pool.query(
+            `SELECT c.*, u.username as author_name, u.role as author_role 
+            FROM comments c 
+            JOIN users u ON c.author_id = u.id 
+            WHERE c.submission_id = $1 
+            ORDER BY c.line_number ASC NULLS LAST, c.created_at ASC`,
+            [submissionId]
+        );
+
+        res.status(200).json(result.rows);
+    } catch (error) {
+        console.error('Error fetching comments:', error)
+        res.status(500).json({ error: 'Internal server error while fetching comments.' });
+    }
+}
