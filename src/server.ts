@@ -5,6 +5,9 @@ import authRoutes from './routes/authRoutes'
 import projectRoutes from './routes/projectRoutes'
 import submissionRoutes from './routes/submissionRoutes'
 import commentRoutes from './routes/commentRoutes'
+import reviewRoutes from './routes/reviewRoutes'
+import analyticsRoutes from './routes/analyticsRoutes'
+import {errorHandler} from './middleware/errorMiddleware'
 
 dotenv.config();
 
@@ -23,6 +26,9 @@ app.use('/api/auth', authRoutes)
 app.use('/api/projects', projectRoutes)
 app.use('/api/submissions', submissionRoutes)
 app.use('/api/comments', commentRoutes)
+app.use('/api/submissions', reviewRoutes);
+app.use('/api', analyticsRoutes)
+app.use(errorHandler) //centralized error handler
 
 const startServer = async () => {
     try {
@@ -30,6 +36,7 @@ const startServer = async () => {
         const client = await pool.connect();
         console.log('Successfully connected to PostgreSQL database')
         client.release(); //release client back to connection pool
+        
         app.listen(PORT, () => {
             console.log(`Server is listening on http://localhost:${PORT}`);
         });
