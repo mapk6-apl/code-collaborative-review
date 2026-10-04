@@ -52,7 +52,7 @@ export const getSubmissionsByProject = async (req: AuthRequest, res: Response): 
 };
 
 //update submission status
-export const updateSubmissionsStatus = async (req: AuthRequest, res: Response): Promise<void> => {
+export const updateSubmissionStatus = async (req: AuthRequest, res: Response): Promise<void> => {
     const {id} = req.params
     const {status} = req.body
     const validStatuses = ['pending', 'in\_review', 'approved', 'changes_requested'];
@@ -81,4 +81,4 @@ export const updateSubmissionsStatus = async (req: AuthRequest, res: Response): 
                 res.status(500).json({ error: 'Internal server error while updating status.' }
                 ); 
             }
-}
+};
