@@ -37,3 +37,13 @@ CREATE TABLE comments (
     comment_text TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
+
+--reviews table
+CREATE TABLE reviews (
+    id SERIAL PRIMARY KEY,
+    submission_id INT NOT NULL REFERENCES submissions(id) ON DELETE CASCADE,
+    reviewer_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+	action VARCHAR(30) NOT NULL CHECK (action IN ('approved', 'changes_requested')),
+	notes TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
