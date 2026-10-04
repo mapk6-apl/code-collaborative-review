@@ -73,3 +73,25 @@ export const requestChangesSubmission = async (req: AuthRequest, res: Response):
         res.status(500).json({ error: 'Internal server error while requesting changes.' });
     }
 }
+
+//we get the review history for a submission
+export const getSubmissionReviews = async (req: AuthRequest, res: Response): Promise<void> => {
+    const {id} = req.params;
+
+    try {
+        const result = await pool.query(
+            `SELECT r.*, u.username as reviewer_name, u.role as reviewer_role 
+            FROM reviews r 
+            JOIN users u ON r.reviewer_id = u.id 
+            WHERE r.submission_id = $1 
+            ORDER BY r.created_at DESC`, 
+            [id] 
+        ); 
+        
+        res.status(200).json(result.rows); 
+    } catch (error) { 
+        console.error('Error fetching review history:', error); 
+        res.status(500).json({ error: 'Internal server error while fetching review history.' });
+     }
+}
+ 
