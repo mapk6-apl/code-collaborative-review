@@ -19,6 +19,10 @@ export const addComment = async (req: AuthRequest, res: Response): Promise<void>
             RETURNING *`, 
             [submissionId, authorId, lineNumber || null, commentText]
         )
+        res.status(201).json({
+            message: 'Comment added successfully',
+            comment: result.rows[0]
+        });
     } catch (error) {
         console.error('Error adding comment:', error)
         res.status(500).json({ error: 'Internal server error while posting comment.' });
@@ -27,7 +31,7 @@ export const addComment = async (req: AuthRequest, res: Response): Promise<void>
 
 //get all comments for submission
 export const getCommentsBySubmission = async (req: AuthRequest, res: Response): Promise<void> => {
-    const {submissionId} = req.body;
+    const {submissionId} = req.params;
     const authorId = req.user?.userId;
 
     try {

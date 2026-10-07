@@ -1,5 +1,7 @@
 import express, {Application, Request, Response} from 'express'
 import dotenv from 'dotenv'
+dotenv.config();
+
 import pool from './config/database'
 import authRoutes from './routes/authRoutes'
 import projectRoutes from './routes/projectRoutes'
@@ -9,13 +11,13 @@ import reviewRoutes from './routes/reviewRoutes'
 import analyticsRoutes from './routes/analyticsRoutes'
 import {errorHandler} from './middleware/errorMiddleware'
 
-dotenv.config();
 
 const app: Application = express();
 
 const PORT = Number(process.env.PORT) || 5001;
 
 app.use(express.json()) //parses incoming requests (POST/PUT) with JSON payloads and populates req.body with the parsed JS object
+app.use((req, res, next) => { console.log(`Incoming Request: ${req.method} ${req.url}`); next(); });
 
 //root route that verifies that the Express server is online and respoinding
 app.get('/', (req: Request, res: Response) => {
